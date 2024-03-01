@@ -9,3 +9,19 @@ My only gripe is that since all of my HTML is nested functions, it can be quite 
 This plugin simply adds ghost text for whatever preceded the matching opening paren next to all closing parenthesis and brackets.
 
 ![Example showing the ghost text](./ss1.jpg)
+
+## Installation
+
+Add `"briangwaltney/paren-hint.nvim"` to your preferred package manager.
+
+Lazy example
+
+```lua
+{
+    "briangwaltney/paren-hint.nvim",
+    lazy = false,
+    config = function()
+        require("paren-hint")
+    end,
+},
+```
