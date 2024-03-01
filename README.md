@@ -1,0 +1,1 @@
+# paren-hint.nvim
