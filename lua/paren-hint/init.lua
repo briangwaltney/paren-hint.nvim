@@ -64,19 +64,7 @@ end
 -- @param lineContent string: the content of the line
 -- @return string: the function name
 local get_func_name = function(lineCol, lineContent)
-	local text = ""
-	for func_col = lineCol - 1, 0, -1 do
-		local func_c = string.sub(lineContent, func_col, func_col)
-		if func_col == lineCol - 1 and func_c == " " then
-			text = trim(string.sub(lineContent, 0, lineCol - 1))
-			break
-		end
-		if isWhiteSpace(func_c) or func_col == 0 then
-			text = string.sub(lineContent, func_col + 1, lineCol - 1)
-			break
-		end
-	end
-	return text
+	return trim(string.sub(lineContent, 0, lineCol - 1))
 end
 
 -- Add the ghost text to the buffer when the cursor is on a close paren variation.
