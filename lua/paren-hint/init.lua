@@ -16,6 +16,13 @@ local function is_treesitter_active()
 	return false
 end
 
+-- Trim the whitespace from the beginning and end of a string
+-- @param s string: the string to trim
+-- @return string: the trimmed string
+local function trim(s)
+	return (s:gsub("^%s*(.-)%s*$", "%1"))
+end
+
 local M = {}
 M.namespace = vim.api.nvim_create_namespace("paren-hint")
 
@@ -61,7 +68,7 @@ local get_func_name = function(lineCol, lineContent)
 	for func_col = lineCol - 1, 0, -1 do
 		local func_c = string.sub(lineContent, func_col, func_col)
 		if func_col == lineCol - 1 and func_c == " " then
-			text = string.sub(lineContent, 0, lineCol - 1)
+			text = trim(string.sub(lineContent, 0, lineCol - 1))
 			break
 		end
 		if isWhiteSpace(func_c) or func_col == 0 then
