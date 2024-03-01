@@ -2,13 +2,10 @@
 
 ## Purpose
 
-I've recently been using [Gompontents](https://www.gomponents.com/) for my Go web projects. It's excellent for generating HTML in Go and I much prefer it to the other template options in Go.
+Some of the libraries I use have a lot of nested parentheses. This makes it hard to see where the parentheses start. This plugin adds a ghost text to the right of the cursor that shows the text preceding the opening parentheses. This makes it easier to see where the parentheses start and where you are in the nesting.
 
-My only gripe is that since all of my HTML is nested functions, it can be quite difficult to see exactly where I'm at when I'm trying to close a function or extract a section.
-
-This plugin simply adds ghost text for whatever preceded the matching opening paren next to all closing parenthesis and brackets.
-
-![Example showing the ghost text](./ss1.jpg)
+![Example of Go code showing the ghost text](./goSS.jpg)
+![Example of js code showing the ghost text](./jsSS.jpg)
 
 ## Installation
 

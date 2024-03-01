@@ -1,5 +1,11 @@
-local M = {}
+local parens = {
+	[")"] = "(",
+	["}"] = "{",
+	["]"] = "[",
+}
 
+-- Check if treesitter is active for the current buffer
+-- @return boolean: true if treesitter is active
 local function is_treesitter_active()
 	local filetype = vim.bo.filetype
 	local parsers = require("nvim-treesitter.parsers")
@@ -10,12 +16,8 @@ local function is_treesitter_active()
 	return false
 end
 
--- Check if the character is a white space
--- @param char string: the character to check
--- @return boolean: true if the character is a white space
-local function isWhiteSpace(char)
-	return char == " " or char == "\t"
-end
+local M = {}
+M.namespace = vim.api.nvim_create_namespace("paren-hint")
 
 vim.api.nvim_create_autocmd("CursorMoved", {
 	pattern = "*",
@@ -27,15 +29,12 @@ vim.api.nvim_create_autocmd("CursorMoved", {
 	end,
 })
 
-M.setup = function() end
-
-M.namespace = vim.api.nvim_create_namespace("paren-hint")
-
-local parens = {
-	[")"] = "(",
-	["}"] = "{",
-	["]"] = "[",
-}
+-- Check if the character is a white space
+-- @param char string: the character to check
+-- @return boolean: true if the character is a white space
+local function isWhiteSpace(char)
+	return char == " " or char == "\t"
+end
 
 -- Get the line number, column, and paren type of the close paren
 -- @return number, number, string: the line number, column, and char of the close paren
@@ -73,16 +72,17 @@ local get_func_name = function(lineCol, lineContent)
 	return text
 end
 
+-- Add the ghost text to the buffer when the cursor is on a close paren variation.
+-- If there is a space before the open paren, the ghost text will show everything preceding the open paren on the line.
 M.add_ghost_text = function()
 	local bufnr = vim.api.nvim_get_current_buf()
-	local closeLineNum, closeCol, char = get_close_paren()
-	if char == nil then
+	local closeLineNum, closeCol, close_paren = get_close_paren()
+	if close_paren == nil then
 		return
 	end
 
 	local text = ""
-	local open_paren = parens[char]
-	local close_paren = char
+	local open_paren = parens[close_paren]
 	local depth = 1
 
 	for line = closeLineNum, 0, -1 do
@@ -115,6 +115,7 @@ M.add_ghost_text = function()
 	})
 end
 
+-- Delete the ghost text from the buffer
 M.delete_ghost_text = function()
 	local bufnr = vim.api.nvim_get_current_buf()
 	vim.api.nvim_buf_clear_namespace(bufnr, M.namespace, 0, -1)
