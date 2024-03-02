@@ -31,7 +31,7 @@ _All options are optional and defaults are shown below_
             anywhere_on_line = false,
 
             -- show the ghost text when the opening paren is on the same line as the close paren
-	        show_same_line_opening = true,
+            show_same_line_opening = true,
         })
     end,
 },

@@ -34,7 +34,7 @@ M.default_opts = {
 	-- Show ghost text when cursor is anywhere on the line that includes the close paren rather just when the cursor is on the close paren
 	anywhere_on_line = false,
 	-- show the ghost text when the opening paren is on the same line as the close paren
-	show_same_line_opening = true,
+	show_same_line_opening = false,
 }
 
 M.opts = M.default_opts
@@ -105,13 +105,11 @@ M.add_ghost_text = function()
 		return
 	end
 	local current_line_num = vim.api.nvim_win_get_cursor(0)[1] - 1
-	if not M.opts.show_same_line_opening and closeLineNum == current_line_num then
-		return
-	end
 
 	local text = ""
 	local open_paren = parens[close_paren]
 	local depth = 1
+	local open_line_num = closeLineNum
 
 	for line = closeLineNum, 0, -1 do
 		if text ~= "" then
@@ -131,11 +129,16 @@ M.add_ghost_text = function()
 			elseif lineChar == open_paren then
 				depth = depth - 1
 				if depth == 0 then
+					open_line_num = line
 					text = get_func_name(lineCol, lineContent)
 					break
 				end
 			end
 		end
+	end
+
+	if not M.opts.show_same_line_opening and open_line_num == current_line_num then
+		return
 	end
 
 	vim.api.nvim_buf_set_extmark(bufnr, M.namespace, closeLineNum, 0, {
