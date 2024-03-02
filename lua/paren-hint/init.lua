@@ -44,12 +44,23 @@ M.setup = function(opts)
 	M.opts = vim.tbl_extend("force", M.default_opts, opts or {})
 end
 
+-- Add the ghost text when the cursor is moved
 vim.api.nvim_create_autocmd("CursorMoved", {
 	pattern = "*",
 	callback = function()
 		if is_treesitter_active() then
 			M.delete_ghost_text()
 			M.add_ghost_text()
+		end
+	end,
+})
+
+-- Delete the ghost text when entering insert mode
+vim.api.nvim_create_autocmd("InsertEnter", {
+	pattern = "*",
+	callback = function()
+		if is_treesitter_active() then
+			M.delete_ghost_text()
 		end
 	end,
 })
