@@ -28,7 +28,13 @@ M.namespace = vim.api.nvim_create_namespace("paren-hint")
 
 -- Default options
 M.default_opts = {
-	include_paren = true, -- Include the opening paren in the ghost text
+	-- Include the opening paren in the ghost text
+	include_paren = true,
+
+	-- Show ghost text when cursor is anywhere on the line that includes the close paren rather just when the cursor is on the close paren
+	anywhere_on_line = false,
+	-- show the ghost text when the opening paren is on the same line as the close paren
+	show_same_line_opening = true,
 }
 
 M.opts = M.default_opts
@@ -65,8 +71,15 @@ local get_close_paren = function()
 		return
 	end
 	local char = string.sub(lineContent, cur_col, cur_col)
-	if parens[char] == nil then
-		return nil, nil, nil
+	if parens[char] ~= nil or not M.opts.anywhere_on_line then
+		return lineNum, cur_col, char
+	end
+	for i = 1, #lineContent do
+		local char_in_line = string.sub(lineContent, i, i)
+		if parens[char_in_line] ~= nil then
+			cur_col = i
+			char = char_in_line
+		end
 	end
 	return lineNum, cur_col, char
 end
@@ -89,6 +102,10 @@ M.add_ghost_text = function()
 	local bufnr = vim.api.nvim_get_current_buf()
 	local closeLineNum, closeCol, close_paren = get_close_paren()
 	if close_paren == nil then
+		return
+	end
+	local current_line_num = vim.api.nvim_win_get_cursor(0)[1] - 1
+	if not M.opts.show_same_line_opening and closeLineNum == current_line_num then
 		return
 	end
 
