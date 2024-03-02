@@ -32,7 +32,7 @@ M.default_opts = {
 	include_paren = true,
 
 	-- Show ghost text when cursor is anywhere on the line that includes the close paren rather just when the cursor is on the close paren
-	anywhere_on_line = false,
+	anywhere_on_line = true,
 	-- show the ghost text when the opening paren is on the same line as the close paren
 	show_same_line_opening = false,
 }
