@@ -35,6 +35,10 @@ M.default_opts = {
 	anywhere_on_line = true,
 	-- show the ghost text when the opening paren is on the same line as the close paren
 	show_same_line_opening = false,
+
+	-- style of the ghost text using highlight group
+	-- :Telescope highlights to see the available highlight groups if you have telescope installed
+	highlight = "Comment",
 }
 
 M.opts = M.default_opts
@@ -153,7 +157,7 @@ M.add_ghost_text = function()
 	end
 
 	vim.api.nvim_buf_set_extmark(bufnr, M.namespace, closeLineNum, 0, {
-		virt_text = { { text, "comment" } },
+		virt_text = { { text, M.opts.highlight } },
 	})
 end
 
