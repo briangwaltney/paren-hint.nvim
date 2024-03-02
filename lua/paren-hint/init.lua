@@ -26,6 +26,18 @@ end
 local M = {}
 M.namespace = vim.api.nvim_create_namespace("paren-hint")
 
+-- Default options
+M.default_opts = {
+	include_paren = true, -- Include the opening paren in the ghost text
+}
+
+M.opts = M.default_opts
+
+-- Setup the plugin
+M.setup = function(opts)
+	M.opts = vim.tbl_extend("force", M.default_opts, opts or {})
+end
+
 vim.api.nvim_create_autocmd("CursorMoved", {
 	pattern = "*",
 	callback = function()
@@ -64,7 +76,11 @@ end
 -- @param lineContent string: the content of the line
 -- @return string: the function name
 local get_func_name = function(lineCol, lineContent)
-	return trim(string.sub(lineContent, 0, lineCol - 1))
+	local cut_point = lineCol - 1
+	if M.opts.include_paren then
+		cut_point = cut_point + 1
+	end
+	return trim(string.sub(lineContent, 0, cut_point))
 end
 
 -- Add the ghost text to the buffer when the cursor is on a close paren variation.

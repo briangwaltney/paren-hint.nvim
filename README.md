@@ -13,6 +13,8 @@ Add `"briangwaltney/paren-hint.nvim"` to your preferred package manager.
 
 Lazy example
 
+_All options are optional and defaults are shown below_
+
 ```lua
 {
     "briangwaltney/paren-hint.nvim",
@@ -21,7 +23,9 @@ Lazy example
         "nvim-treesitter/nvim-treesitter",
     },
     config = function()
-        require("paren-hint")
+        require("paren-hint").setup({
+            include_paren = true, -- Include the opening paren in the ghost text
+        })
     end,
 },
 ```
