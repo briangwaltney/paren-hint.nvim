@@ -4,18 +4,6 @@ local parens = {
 	["]"] = "[",
 }
 
--- Check if treesitter is active for the current buffer
--- @return boolean: true if treesitter is active
-local function is_treesitter_active()
-	local filetype = vim.bo.filetype
-	local parsers = require("nvim-treesitter.parsers")
-	local installed_parsers = parsers.get_parser_configs()
-	if installed_parsers[filetype] then
-		return true
-	end
-	return false
-end
-
 -- Trim the whitespace from the beginning and end of a string
 -- @param s string: the string to trim
 -- @return string: the trimmed string
@@ -48,11 +36,20 @@ M.setup = function(opts)
 	M.opts = vim.tbl_extend("force", M.default_opts, opts or {})
 end
 
+-- Check if plugin should be enabled for the current file type
+-- @return boolean: true if treesitter is active
+M.is_active_file_type = function()
+	local success, parser = pcall(function()
+		return vim.treesitter.get_parser()
+	end)
+	return success and parser ~= nil
+end
+
 -- Add the ghost text when the cursor is moved
 vim.api.nvim_create_autocmd("CursorMoved", {
 	pattern = "*",
 	callback = function()
-		if is_treesitter_active() then
+		if M.is_active_file_type() then
 			M.delete_ghost_text()
 			M.add_ghost_text()
 		end
@@ -63,7 +60,7 @@ vim.api.nvim_create_autocmd("CursorMoved", {
 vim.api.nvim_create_autocmd("InsertEnter", {
 	pattern = "*",
 	callback = function()
-		if is_treesitter_active() then
+		if M.is_active_file_type() then
 			M.delete_ghost_text()
 		end
 	end,

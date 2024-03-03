@@ -19,9 +19,6 @@ _All options are optional and defaults are shown below_
 {
     "briangwaltney/paren-hint.nvim",
     lazy = false,
-    dependencies = {
-        "nvim-treesitter/nvim-treesitter",
-    },
     config = function()
         -- you can create a custom highlight group for the ghost text with the below command.
         -- change the `highlight` option to `parenhint` if you use this method.
@@ -35,7 +32,6 @@ _All options are optional and defaults are shown below_
 
             -- show the ghost text when the opening paren is on the same line as the close paren
             show_same_line_opening = false,
-
 
             -- style of the ghost text using highlight group
             -- :Telescope highlights to see the available highlight groups if you have telescope installed
