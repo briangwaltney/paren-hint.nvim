@@ -27,6 +27,27 @@ M.default_opts = {
 	-- style of the ghost text using highlight group
 	-- :Telescope highlights to see the available highlight groups if you have telescope installed
 	highlight = "Comment",
+
+	-- excluded filetypes (copied from indent-blankline)
+	excluded_filetypes = {
+		"lspinfo",
+		"packer",
+		"checkhealth",
+		"help",
+		"man",
+		"gitcommit",
+		"TelescopePrompt",
+		"TelescopeResults",
+		"",
+	},
+
+	-- excluded buftypes (copied from indent-blankline)
+	excluded_buftypes = {
+		"terminal",
+		"nofile",
+		"quickfix",
+		"prompt",
+	},
 }
 
 M.opts = M.default_opts
@@ -39,10 +60,10 @@ end
 -- Check if plugin should be enabled for the current file type
 -- @return boolean: true if treesitter is active
 M.is_active_file_type = function()
-	local success, parser = pcall(function()
-		return vim.treesitter.get_parser()
-	end)
-	return success and parser ~= nil
+	local file_type = vim.bo.filetype
+	local buftype = vim.bo.buftype
+	return not vim.tbl_contains(M.opts.excluded_filetypes, file_type)
+		and not vim.tbl_contains(M.opts.excluded_buftypes, buftype)
 end
 
 -- Add the ghost text when the cursor is moved

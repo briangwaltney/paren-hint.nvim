@@ -36,6 +36,26 @@ _All options are optional and defaults are shown below_
             -- style of the ghost text using highlight group
             -- :Telescope highlights to see the available highlight groups if you have telescope installed
             highlight = "Comment",
+
+            -- excluded filetypes
+            excluded_filetypes = {
+                "lspinfo",
+                "packer",
+                "checkhealth",
+                "help",
+                "man",
+                "gitcommit",
+                "TelescopePrompt",
+                "TelescopeResults",
+                "",
+            },
+            -- excluded buftypes
+            excluded_buftypes = {
+                "terminal",
+                "nofile",
+                "quickfix",
+                "prompt",
+            },
         })
     end,
 },
