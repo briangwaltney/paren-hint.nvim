@@ -21,8 +21,11 @@ M.default_opts = {
 
 	-- Show ghost text when cursor is anywhere on the line that includes the close paren rather just when the cursor is on the close paren
 	anywhere_on_line = true,
-	-- show the ghost text when the opening paren is on the same line as the close paren
+	-- Show the ghost text when the opening paren is on the same line as the close paren
 	show_same_line_opening = false,
+
+    -- Start the ghost text with a comment string (Ex: "-- " for Lua, "// " for JS)
+    start_with_comment = false,
 
 	-- style of the ghost text using highlight group
 	-- :Telescope highlights to see the available highlight groups if you have telescope installed
@@ -129,6 +132,9 @@ local get_func_name = function(lineCol, lineContent)
 	return trim(string.sub(lineContent, 0, cut_point))
 end
 
+-- Keep track of the current commentstring
+local commentStr = ""
+
 -- Add the ghost text to the buffer when the cursor is on a close paren variation.
 -- If there is a space before the open paren, the ghost text will show everything preceding the open paren on the line.
 M.add_ghost_text = function()
@@ -138,6 +144,11 @@ M.add_ghost_text = function()
 		return
 	end
 	local current_line_num = vim.api.nvim_win_get_cursor(0)[1] - 1
+
+    -- Update the comment string if it's not already set
+    if string.len(commentStr) < 1 then
+        commentStr = vim.api.nvim_buf_get_option(0, "commentstring")
+    end
 
 	local text = ""
 	local open_paren = parens[close_paren]
@@ -163,7 +174,11 @@ M.add_ghost_text = function()
 				depth = depth - 1
 				if depth == 0 then
 					open_line_num = line
-					text = get_func_name(lineCol, lineContent)
+					if M.opts.start_with_comment then
+						text = string.format(commentStr, get_func_name(lineCol, lineContent))
+					else
+						text = get_func_name(lineCol, lineContent)
+					end
 					break
 				end
 			end
